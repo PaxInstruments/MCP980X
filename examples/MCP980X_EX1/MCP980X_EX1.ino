@@ -1,6 +1,6 @@
-#include <MCP980X.h>
+#include <MCP980X.h>      //http://github.com/JChristensen/MCP980X
 #include <Streaming.h>    //http://arduiniana.org/libraries/streaming/
-#include <Wire.h>
+#include <Wire.h>         //http://arduino.cc/en/Reference/Wire
 
 MCP980X mySensor(0);
 

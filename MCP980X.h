@@ -1,6 +1,23 @@
 /*-----------------------------------------------------------------------------*
- * Arduino library for Microchip MCP9800/1/2/3 2-Wire High-Accuracy            *
- * Temperature Sensor                                                          *
+ * Arduino Library for Microchip MCP9800/1/2/3 2-Wire High-Accuracy            *
+ * Temperature Sensors                                                         *
+ *                                                                             *
+ * A basic implementation that exposes all functionality of the MCP980X        *
+ * sensors. Temperatures are dealt with in the integer domain to avoid         *
+ * the code size and runtime overhead associated with floating-point. Still,   *
+ * it is easy enough to perform the necessary conversions should the user      *
+ * wish to work in floating-point format.                                      *
+ *                                                                             *
+ * Temperatures read from the device's registers are returned as °C*16.        *
+ * (If the device resolution is set to less than 12 bits, the corresponding    *
+ * lower order bits are simply returned as zero.) Temperatures can             *
+ * alternately be read as °F*10.                                               *
+ *                                                                             *
+ * When writing the Hysteresis and Limit-Set registers, the value must be      *
+ * given as °C*2, which corresponds to the internal representation in these    *
+ * registers.                                                                  *
+ *                                                                             *
+ * Bit masks for the control register are provided in the MCP980X.h file.      *
  *                                                                             *
  * Jack Christensen 21Mar2014 v1.0                                             *
  *                                                                             *
