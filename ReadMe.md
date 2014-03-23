@@ -8,7 +8,7 @@ Jack Christensen Mar 2014
 ## Introduction ##
 **Arduino Library for Microchip MCP9800/1/2/3 2-Wire High-Accuracy Temperature Sensors**
 
-A basic implementation that exposes all functionality of the [Microchip MCP980X sensors](http://www.microchip.com/wwwproducts/Devices.aspx?dDocName=en020949). Temperatures are dealt with in the integer domain to avoid the code size and runtime overhead associated with floating-point. Still, it is easy enough to perform the necessary conversions should the user wish to work in floating-point format.
+A lightweight implementation that exposes all functionality of the [Microchip MCP980X sensors](http://www.microchip.com/wwwproducts/Devices.aspx?dDocName=en020949). Temperatures are dealt with in the integer domain to avoid the code size and runtime overhead associated with floating-point. Still, it is easy enough to perform the necessary conversions should the user wish to work in floating-point format.
 
 Temperatures read from the device's registers are returned as °C\*16. (If the device resolution is set to less than 12 bits, the corresponding lower order bits are simply returned as zero.) Temperatures can alternately be read as °F\*10.
 
@@ -43,28 +43,28 @@ To use the **MCP980X** library, the standard Arduino Wire library must also be i
 #####Description
 Symbolic names for the MCP980X registers.
 #####Values
-AMBIENT -- for the Ambient Temperature Register  
-HYSTERESIS -- for the Temperature Hysteresis Register  
-LIMITSET -- for the Temperature Limit-Set Register
+- AMBIENT -- for the Ambient Temperature Register  
+- HYSTERESIS -- for the Temperature Hysteresis Register  
+- LIMITSET -- for the Temperature Limit-Set Register
 
 ## Constructor ##
 
 ###MCP980X(int LS_ADDR_BITS)
 #####Description
-Instantiates...
+Instantiates an MCP980X sensor object.
 #####Syntax
 `MCP980X mySensor(0);`
 #####Parameters
-Least-significant three bits of the device address *(int)*.
+**LS_ADDR_BITS:** An integer *(int)* representing the least-significant three bits of the I2C device address (i.e. a value between 0 and 7). Note that some devices in the MCP980X family allow the user to select the least significant three bits of the address, and some have a fixed address from the factory. See the datasheet for details. As ever, all devices on an I2C bus must have unique addresses.
 
 ## Methods ##
 ###begin(void)
 #####Description
-...
+Initializes the library. Call this method once in the setup code.
 #####Syntax
 `mySensor.begin(void);`
 #####Parameters
-**foo:** ...
+None.
 #####Returns
 None.
 #####Example
@@ -74,66 +74,82 @@ mySensor.begin();
 ```
 ###readTempC16(MCP980X_REGS_t reg)
 #####Description
-...
+Reads one of the three temperature registers from the sensor.
 #####Syntax
 `mySensor.readTempC16(MCP980X_REGS_t reg);`
 #####Parameters
-**foo:** ...
+**reg:** The temperature register to read, AMBIENT, HYSTERESIS or LIMITSET *(MCP980X_REGS_t)*
 #####Returns
-None.
+Temperature as degrees Celsius times 16 *(int)*.
 #####Example
 ```c++
-...
+MCP980X mySensor(0);
+mySensor.begin();
+int c16 = mySensor.readTempC16(AMBIENT);
+float C = c16 / 16.0;
 ```
 ###readTempF10(MCP980X_REGS_t reg)
 #####Description
-...
+Reads one of the three temperature registers from the sensor.
 #####Syntax
 `mySensor.readTempF10(MCP980X_REGS_t reg);`
 #####Parameters
-**foo:** ...
+**reg:** The temperature register to read, AMBIENT, HYSTERESIS or LIMITSET *(MCP980X_REGS_t)*
 #####Returns
-None.
+Temperature as degrees Fahrenheit times 10 *(int)*.
 #####Example
 ```c++
-...
+MCP980X mySensor(0);
+mySensor.begin();
+int f10 = mySensor.readTempF10(AMBIENT);
+float F = f10 / 10.0;
 ```
 ###writeTempC2(MCP980X_REGS_t reg, int value)
 #####Description
-...
+Sets the Temperature Hysteresis Register or the Temperature Limit-Set Register.
 #####Syntax
 `mySensor.writeTempC2(MCP980X_REGS_t reg, int value);`
 #####Parameters
-**foo:** ...
+**reg:** The temperature register to write, HYSTERESIS or LIMITSET *(MCP980X_REGS_t)*. If given the AMBIENT temperature register, no action is taken (AMBIENT is a read-only register).  
+**value:** The temperature value to set, in degrees Celsius times two *(int)*
 #####Returns
 None.
 #####Example
 ```c++
-...
+MCP980X mySensor(0);
+mySensor.begin();
+mySensor.writeTempC2(HYSTERESIS, 25 * 2);	//set hysteresis register to 25°C
+mySensor.writeTempC2(LIMITSET, 100 * 2);	//set limit-set register to 100°C
 ```
 ###readConfig(void)
 #####Description
-...
+Reads the value of the configuration register.
 #####Syntax
 `mySensor.readConfig(void);`
 #####Parameters
-**foo:** ...
-#####Returns
 None.
+#####Returns
+Configuration register value *(byte)*
 #####Example
 ```c++
-...
+MCP980X mySensor(0);
+mySensor.begin();
+byte config = mySensor.readConfig();
 ```
 ###writeConfig(uint8_t value)
 #####Description
-...
+Writes a value to the configuration register.
 #####Syntax
-`mySensor.writeConfig(uint8_t value);`
+`mySensor.writeConfig(byte value);`
 #####Parameters
-**foo:** ...
+**value:** The value to be written to the register. See the MCP980X.h file for symbolic definitions for the bits in the configuration register.
 #####Returns
 None.
 #####Example
 ```c++
-...
+MCP980X mySensor(0);
+mySensor.begin();
+//set ADC resolution to 12 bits and the fault queue length to 6
+byte config = ADC_RES_12BITS | FAULT_QUEUE_6;
+mySensor.writeConfig(config);
 ```

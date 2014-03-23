@@ -2,7 +2,7 @@
  * Arduino Library for Microchip MCP9800/1/2/3 2-Wire High-Accuracy            *
  * Temperature Sensors                                                         *
  *                                                                             *
- * A basic implementation that exposes all functionality of the MCP980X        *
+ * A lightweight implementation that exposes all functionality of the MCP980X  *
  * sensors. Temperatures are dealt with in the integer domain to avoid         *
  * the code size and runtime overhead associated with floating-point. Still,   *
  * it is easy enough to perform the necessary conversions should the user      *
